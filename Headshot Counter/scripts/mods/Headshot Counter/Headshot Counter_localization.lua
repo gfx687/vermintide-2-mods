@@ -29,4 +29,7 @@ return {
 	hs_count_font_size = {
 		en = "Font size"
 	},
+	hs_count_reset_bind = {
+		en = "Keybind: Reset headshot data"
+	},
 }

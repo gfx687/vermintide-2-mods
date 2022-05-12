@@ -1,7 +1,7 @@
 local mod = get_mod("Headshot Counter")
 
-local SCREEN_WIDTH = 1920
-local SCREEN_HEIGHT = 1080
+local SCREEN_WIDTH = 3840
+local SCREEN_HEIGHT = 2160
 local elite_types = {
     ["beastmen_bestigor"] = true,
     ["chaos_raider"] = true,
@@ -43,8 +43,8 @@ local scenegraph_definition = {
     root = {
         scale = "fit",
         size = {
-            1920,
-            1080
+            3840,
+            2160
         },
         position = {
             0,
@@ -138,7 +138,7 @@ local hs_data = {
     melee_elites_hs = 0,
 }
 
-local function clear()
+function mod.clear_hs_data()
     local total_percent = 100 * hs_data.melee_total_hs / hs_data.melee_total
     if not (total_percent ~= total_percent) then
         mod:echo("Total HS rate of the previous run : %.1f%%", total_percent)
@@ -156,12 +156,12 @@ local function clear()
 end
 
 mod:command("hsc_reset", "Manually reset Headshot Counter.", function()
-    clear()
+    mod:clear_hs_data()
 end)
 
 mod.on_game_state_changed = function(status, state_name)
     if status == "enter" and state_name == "StateLoading" then
-        clear()
+        mod:clear_hs_data()
     end
 end
 

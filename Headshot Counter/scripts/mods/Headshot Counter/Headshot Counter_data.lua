@@ -19,33 +19,42 @@ return {
 	options = {
 		widgets = {
 			{
+				setting_id = "hs_count_reset_bind",
+				type = "keybind",
+				keybind_global = true,
+				keybind_type = "function_call",
+				keybind_trigger = "pressed",
+				function_name = "clear_hs_data",
+				default_value = {}
+			},
+			{
 				setting_id = "hs_count_mode",
 				type = "dropdown",
 				default_value = all_mods[1],
 				options = table.clone(options)
 			},
 			{
-				setting_id = "hs_count_show_total",
-				type = "checkbox",
-				default_value = false
-			},
-			{
 				setting_id = "hs_count_offset_x",
 				type = "numeric",
 				default_value = -400,
-				range = { -960, 960 },
+				range = { -1920, 1920 },
 			},
 			{
 				setting_id = "hs_count_offset_y",
 				type = "numeric",
 				default_value = 0,
-				range = { -540, 540 },
+				range = { -1080, 1080 },
 			},
 			{
 				setting_id = "hs_count_font_size",
 				type = "numeric",
 				default_value = 32,
 				range = { 8, 128 },
+			},
+			{
+				setting_id = "hs_count_show_total",
+				type = "checkbox",
+				default_value = false
 			},
 		}
 	}
