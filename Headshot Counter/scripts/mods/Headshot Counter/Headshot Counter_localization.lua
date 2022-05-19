@@ -20,6 +20,9 @@ return {
 	hs_count_show_total = {
 		en = "[For Debug] Shows total number of melee headshots / hits"
 	},
+	hs_count_show_detailed = {
+		en = "Show per-breed report in chat"
+	},
 	hs_count_offset_x = {
 		en = "Offset X"
 	},

@@ -34,6 +34,11 @@ return {
 				options = table.clone(options)
 			},
 			{
+				setting_id = "hs_count_show_detailed",
+				type = "checkbox",
+				default_value = false
+			},
+			{
 				setting_id = "hs_count_offset_x",
 				type = "numeric",
 				default_value = -400,

@@ -2,16 +2,37 @@ local mod = get_mod("Headshot Counter")
 
 local SCREEN_WIDTH = 3840
 local SCREEN_HEIGHT = 2160
-local elite_types = {
-    ["beastmen_bestigor"] = true,
-    ["chaos_raider"] = true,
-    ["chaos_warrior"] = true,
-    ["chaos_berzerker"] = true,
-    ["skaven_plague_monk"] = true,
-    ["skaven_storm_vermin"] = true,
-    ["skaven_storm_vermin_commander"] = true,
-    ["skaven_storm_vermin_with_shield"] = true,
+local breed_types = {
+    ["beastmen_bestigor"] = "elite",
+    ["chaos_raider"] = "elite",
+    ["chaos_warrior"] = "elite",
+    ["chaos_berzerker"] = "elite",
+    ["skaven_plague_monk"] = "elite",
+    ["skaven_storm_vermin"] = "elite",
+    ["skaven_storm_vermin_commander"] = "elite",
+    ["skaven_storm_vermin_with_shield"] = "elite",
+
+    ["beastmen_minotaur"] = "monster",
+    ["chaos_spawn"] = "monster",
+    ["chaos_troll"] = "monster",
+    ["skaven_rat_orge"] = "monster",
+    ["skaven_stormfiend"] = "monster",
 }
+
+local hs_data = {
+    melee_total = 0,
+    melee_total_hs = 0,
+    melee_elites_total = 0,
+    melee_elites_hs = 0,
+    per_enemy_type = {}
+}
+
+for breed, _ in pairs(breed_types) do
+	hs_data.per_enemy_type[breed] = {
+        total = 0,
+        hs = 0
+    }
+end
 
 local function get_x()
     local x = mod:get("hs_count_offset_x")
@@ -131,13 +152,6 @@ function mod:init()
     mod.ui_widget = UIWidget.init(ui_definition)
 end
 
-local hs_data = {
-    melee_total = 0,
-    melee_total_hs = 0,
-    melee_elites_total = 0,
-    melee_elites_hs = 0,
-}
-
 function mod.clear_hs_data()
     local total_percent = 100 * hs_data.melee_total_hs / hs_data.melee_total
     if not (total_percent ~= total_percent) then
@@ -147,6 +161,23 @@ function mod.clear_hs_data()
     local elites_percent = 100 * hs_data.melee_elites_hs / hs_data.melee_elites_total
     if not (elites_percent ~= elites_percent) then
         mod:echo("Elites HS rate of the previous run : %.1f%%", elites_percent)
+    end
+
+    if mod:get("hs_count_show_detailed") then
+        mod:echo("----- Breeds HS rates -----")
+
+        for breed, data in pairs(hs_data.per_enemy_type) do
+            local hs_rate = 100 * data.hs / data.total
+            if hs_rate ~= hs_rate then
+                hs_rate = 0
+            end
+            mod:echo("%-30s : %.1f%% ", breed, hs_rate)
+        end
+    end
+
+    for breed, data in pairs(hs_data.per_enemy_type) do
+        data.hs = 0
+        data.total = 0
     end
 
     hs_data.melee_total = 0
@@ -231,18 +262,35 @@ mod:hook_safe(StatisticsUtil, "register_damage", function(victim_unit, damage_da
             local current_health = health_extension:current_health()
 
             if current_health > 0 then
+                local is_headshot = false
                 local hit_zone = damage_data[DamageDataIndex.HIT_ZONE]
-                local is_elite = elite_types[target_breed.name]
-
-                hs_data.melee_total = hs_data.melee_total + 1
-                if is_elite then
-                    hs_data.melee_elites_total = hs_data.melee_elites_total + 1
+                if hit_zone == "head" or hit_zone == "neck" or hit_zone == "weakspot" then
+                    is_headshot = true
                 end
 
-                if hit_zone == "head" or hit_zone == "neck" or hit_zone == "weakspot" then
-                    hs_data.melee_total_hs = hs_data.melee_total_hs + 1
-                    if is_elite then
+                local breed_type = breed_types[target_breed.name]
+                if breed_type then
+                    local per_breed = hs_data.per_enemy_type[target_breed.name]
+
+                    per_breed.total = per_breed.total + 1
+                    if is_headshot then
+                        per_breed.hs = per_breed.hs + 1
+                    end
+                end
+
+                local is_elite = false or breed_type and breed_type == "elite"
+
+                if is_elite then
+                    hs_data.melee_elites_total = hs_data.melee_elites_total + 1
+
+                    if is_headshot then
                         hs_data.melee_elites_hs = hs_data.melee_elites_hs + 1
+                    end
+                else
+                    hs_data.melee_total = hs_data.melee_total + 1
+
+                    if is_headshot then
+                        hs_data.melee_total_hs = hs_data.melee_total_hs + 1
                     end
                 end
             end
