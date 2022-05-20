@@ -152,7 +152,7 @@ function mod:init()
     mod.ui_widget = UIWidget.init(ui_definition)
 end
 
-function mod.clear_hs_data()
+function mod.print_and_clear_hs_data()
     local total_percent = 100 * hs_data.melee_total_hs / hs_data.melee_total
     if not (total_percent ~= total_percent) then
         mod:echo("Total HS rate of the previous run : %.1f%%", total_percent)
@@ -164,14 +164,20 @@ function mod.clear_hs_data()
     end
 
     if mod:get("hs_count_show_detailed") then
-        mod:echo("----- Breeds HS rates -----")
+        local header_printed = false
 
         for breed, data in pairs(hs_data.per_enemy_type) do
             local hs_rate = 100 * data.hs / data.total
-            if hs_rate ~= hs_rate then
-                hs_rate = 0
+            if not (hs_rate ~= hs_rate) then
+
+                -- avoid printing header if no HS data was gathered (first game start, restart without fighting, etc)
+                if not header_printed then
+                    header_printed = true
+                    mod:echo("----- Breeds HS rates -----")
+                end
+
+                mod:echo("%-30s : %.1f%% ", breed, hs_rate)
             end
-            mod:echo("%-30s : %.1f%% ", breed, hs_rate)
         end
     end
 
@@ -187,12 +193,12 @@ function mod.clear_hs_data()
 end
 
 mod:command("hsc_reset", "Manually reset Headshot Counter.", function()
-    mod:clear_hs_data()
+    mod:print_and_clear_hs_data()
 end)
 
 mod.on_game_state_changed = function(status, state_name)
     if status == "enter" and state_name == "StateLoading" then
-        mod:clear_hs_data()
+        mod:print_and_clear_hs_data()
     end
 end
 
@@ -280,17 +286,16 @@ mod:hook_safe(StatisticsUtil, "register_damage", function(victim_unit, damage_da
 
                 local is_elite = false or breed_type and breed_type == "elite"
 
+                hs_data.melee_total = hs_data.melee_total + 1
+                if is_headshot then
+                    hs_data.melee_total_hs = hs_data.melee_total_hs + 1
+                end
+
                 if is_elite then
                     hs_data.melee_elites_total = hs_data.melee_elites_total + 1
 
                     if is_headshot then
                         hs_data.melee_elites_hs = hs_data.melee_elites_hs + 1
-                    end
-                else
-                    hs_data.melee_total = hs_data.melee_total + 1
-
-                    if is_headshot then
-                        hs_data.melee_total_hs = hs_data.melee_total_hs + 1
                     end
                 end
             end
