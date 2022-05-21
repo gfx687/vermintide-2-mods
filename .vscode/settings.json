@@ -1,0 +1,10 @@
+{
+    "Lua.diagnostics.globals": [
+        "SpecialsSettings",
+        "PacingSettings",
+        "Managers",
+        "ConflictDirector",
+        "ScriptUnit",
+        "BLACKBOARDS"
+    ]
+}
