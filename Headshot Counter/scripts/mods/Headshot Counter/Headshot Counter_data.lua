@@ -24,7 +24,7 @@ return {
 				keybind_global = true,
 				keybind_type = "function_call",
 				keybind_trigger = "pressed",
-				function_name = "clear_hs_data",
+				function_name = "print_and_clear_hs_data",
 				default_value = {}
 			},
 			{
