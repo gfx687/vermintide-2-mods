@@ -5,6 +5,19 @@
         "Managers",
         "ConflictDirector",
         "ScriptUnit",
-        "BLACKBOARDS"
+        "BLACKBOARDS",
+        "GameSession",
+        "BuffFunctionTemplates",
+        "Unit",
+        "DamageUtils",
+        "TalentBuffTemplates",
+        "BackendUtils",
+        "Localize",
+        "LevelHelper",
+        "get_mod",
+        "GameModeAdventure",
+        "GameNetworkManager",
+        "NetworkLookup",
+        "StateIngame"
     ]
 }

@@ -35,4 +35,7 @@ return {
 	hs_count_reset_bind = {
 		en = "Keybind: Reset headshot data"
 	},
+	hs_count_only_first_cleaved = {
+		en = "Only count first cleaved"
+	}
 }

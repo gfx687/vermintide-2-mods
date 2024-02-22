@@ -57,6 +57,11 @@ return {
 				range = { 8, 128 },
 			},
 			{
+				setting_id = "hs_count_only_first_cleaved",
+				type = "checkbox",
+				default_value = false
+			},
+			{
 				setting_id = "hs_count_show_total",
 				type = "checkbox",
 				default_value = false
